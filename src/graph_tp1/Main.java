@@ -1,22 +1,26 @@
 package graph_tp1;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static <E, V> void main(String[] args) {
 		// TODO Auto-generated method stub
 		DirectedListGraph dg = new DirectedListGraph();
 		UndirectedListGraph ug = new UndirectedListGraph();
+		WeightedListGraph wg = new WeightedListGraph();
+		
 		Word w = new Word("kek");
 		ColoredWord wc = new ColoredWord("coloredKek",Color.RED);
 		
-		V a = new V ('a');
-		V d = new V ('d');
-		V c = new V ('c');
-		V b = new V ('b');
-		V e = new V ('e');
-		V f = new V ('f');
+		int a = 11;
+		Word d = new Word ("d");
+		Word c = new Word ("c");
+		Word b = new Word ("b");
+		Word e = new Word ("e");
+		Word f = new Word ("f");
 		
 		dg.addEdge(a, b);
 		dg.addEdge(c, a);
@@ -36,8 +40,11 @@ public class Main {
 		ug.addEdge(f, a);
 		ug.addEdge(f, b);
 		ug.addEdge(e, f);
+		//ug.addEdge(wc, a);
 		
-		
+		Set<ColoredWord> setW = new HashSet<ColoredWord>();
+		setW.add(wc);
+		ug.addVertices(setW);
 		
 		System.out.println(dg.printGraph());
 		System.out.println(dg.listToString(dg.execute(dg,a)));
@@ -45,6 +52,15 @@ public class Main {
 		System.out.println("\n------------------\n");
 		
 		System.out.println(ug.printGraph());
-		System.out.println(ug.listToString(ug.execute(ug,b)));
+		System.out.println(ug.listToString(ug.execute(ug,a)));
+		
+		System.out.println("\n------------------\n");
+		
+		wg.addEdge(a, b);
+		wg.addEdge(c, b);
+		wg.addEdge(wc, e);
+		wg.addEdge(a, d);
+		
+		System.out.println(wg.printGraph());
 	}
 }

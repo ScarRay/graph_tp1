@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractListGraph {
+public abstract class AbstractListGraph <V> {
 
 		//La liste est de type HashMap
 		protected HashMap liste = new HashMap<>();
@@ -38,13 +38,13 @@ public abstract class AbstractListGraph {
 		public boolean addVertex(V vertex) {
 			// TODO Auto-generated method stub
 			Set<V> listTempo = new HashSet<V>();
-			this.liste.put(vertex.getValue(), listTempo);
+			this.liste.put(vertex, listTempo);
 			return false;
 		}
 
 		public Set<V> getChildren(V vertex) {
 			// TODO Auto-generated method stub
-			return (Set<graph_tp1.V>) this.liste.get(vertex);
+			return (Set<V>) this.liste.get(vertex);
 		}
 		
 		public String printGraph() {
@@ -55,7 +55,7 @@ public abstract class AbstractListGraph {
 			else newListe = getUniqueAdjacencies();
 			
 			for(Object key : newListe.keySet()) {
-				char k = ((V) key).getValue();
+				V k = ((V)key);
 				s.append("node [label="+k+"] "+key.hashCode()+"\n");
 			}
 			s.append("\n");
@@ -66,8 +66,9 @@ public abstract class AbstractListGraph {
 				
 				for (V vertex : listTempo) {
 					String node;
-					if(this.getDotType() == "digraph") node = ((V)key).getValue()+" -> "+vertex.getValue();
-					else node = ((V)key).getValue()+" -- "+vertex.getValue();
+					if(this.getDotType() == "digraph") node = ((V)key)+" -> "+vertex;
+					else if(this.getDotType() == "wegraph") node = ((V)key)+" -- "+vertex+ " [label="+ this.toString() +"]";
+					else node = ((V)key)+" -- "+vertex;
 					s.append(node + " \n");
 			    }
 
@@ -78,11 +79,11 @@ public abstract class AbstractListGraph {
 		
 		public <V> List<V> execute(Graph graph, V vertex) {
 			Set<V> v1 = new HashSet();
-			v1 = (Set<V>) graph.getChildren((graph_tp1.V) vertex);
+			v1 = (Set<V>) graph.getChildren((V) vertex);
 			
 			List<V> myList = new ArrayList<V>();
 			myList.add(vertex);
-			this.setMarked((graph_tp1.V) vertex);
+			setVertexMarked(vertex);
 			
 			if (v1 !=null) {
 				for(V point:v1) {
@@ -92,25 +93,28 @@ public abstract class AbstractListGraph {
 			return myList;
 		}
 		
-		public void setMarked(V vertex) {
-			this.marked.add(vertex);
+
+		private void setVertexMarked(Object vertex) {
+			this.marked.add((V)vertex);
 		}
 		
 		public String listToString(List<V> list) {
 			StringBuilder s = new StringBuilder();
 			for (V vertex : list) {
-				char node = vertex.getValue();
+				V node = vertex;
 				s.append(node + " ");
 			}
 			return s.toString();
 		}
 		
 		protected abstract String getDotType () ;
+		
 		protected Map<V,Set<V>> getUniqueAdjacencies() {
 			Map<V, Set<V>> returnListe = new HashMap<>();
 			Map<V, Set<V>> markedListe = new HashMap<>();
 			
 			for(Object key : liste.keySet()) {
+				if(liste.get(key) != null) {
 				for (V vertex : (Set<V>) liste.get(key)) {
 					Set<V> setMarked = new HashSet<V>();
 					setMarked.add((V) key);
@@ -127,6 +131,11 @@ public abstract class AbstractListGraph {
 						returnListe.put((V) key, listTempo);
 					}
 			    }
+				} else {
+					Set<V> listTempo = new HashSet<V>();
+					returnListe.put((V) key, listTempo);
+				}
+			   
 
 			}
 			
@@ -136,9 +145,9 @@ public abstract class AbstractListGraph {
 		
 		protected boolean getExistObject(Map<V, Set<V>> set, V key, V vertex) {
 			for(V test : set.keySet()) {
-				if(test.getValue()==key.getValue()) {
+				if(test==key) {
 					for (V test3 : (Set<V>) set.get(test)) {
-						if(vertex.getValue()==test3.getValue()) return true;
+						if(vertex==test3) return true;
 					}
 				}
 			}
@@ -146,7 +155,7 @@ public abstract class AbstractListGraph {
 			
 		}
 		
-		public Set<V> addVertices(Set<V> vertices) {
+		public Set<V> addVertices(Set<? extends V> vertices) {
 			Set<V> verticesNonAdded = new HashSet<V>();
 			for(V test : vertices) {
 				if(liste.containsKey(test))verticesNonAdded.add(test);
