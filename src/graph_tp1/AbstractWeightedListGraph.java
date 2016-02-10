@@ -30,9 +30,7 @@ public abstract class AbstractWeightedListGraph<E, V> extends AbstractListGraph 
 		}
 	}
 
-	protected String edgeString (V fromVertex,V toVertex) {
-		return fromVertex +" -> "+ toVertex;
-	}
+	
 	protected String getDotType() {
 		return "wegraph";
 	}

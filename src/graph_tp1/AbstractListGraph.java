@@ -49,7 +49,9 @@ public abstract class AbstractListGraph <V> {
 		
 		public String printGraph() {
 			StringBuilder s = new StringBuilder();
-			s.append("digraph G { \n");
+			if(this.getDotType()=="digraph") s.append("digraph G { \n");
+			else if(this.getDotType()=="wegraph")  s.append("wegraph G { \n");
+			else  s.append("graph G { \n");
 			Map<V, Set<V>> newListe = new HashMap<>();
 			if(this.getDotType()=="digraph") newListe = liste;
 			else newListe = getUniqueAdjacencies();
@@ -67,7 +69,7 @@ public abstract class AbstractListGraph <V> {
 				for (V vertex : listTempo) {
 					String node;
 					if(this.getDotType() == "digraph") node = ((V)key)+" -> "+vertex;
-					else if(this.getDotType() == "wegraph") node = ((V)key)+" -- "+vertex+ " [label="+ this.toString() +"]";
+					else if(this.getDotType() == "wegraph") node = ((V)key)+" -- "+vertex+ " [label="+ this.edgeString((V)key, vertex) +"]";
 					else node = ((V)key)+" -- "+vertex;
 					s.append(node + " \n");
 			    }
@@ -162,5 +164,9 @@ public abstract class AbstractListGraph <V> {
 				else liste.put(test, null);
 			}
 			return verticesNonAdded;
+		}
+		
+		protected String edgeString (V fromVertex,V toVertex) {
+			return fromVertex +"->"+ toVertex;
 		}
 	}

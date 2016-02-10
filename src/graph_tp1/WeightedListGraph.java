@@ -8,7 +8,5 @@ public class WeightedListGraph<E, V> extends AbstractWeightedListGraph<E, V>{
 		return false;
 	}
 	
-	public String toString() {
-		return "test";
-	}
+	
 }
